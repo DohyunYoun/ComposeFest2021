@@ -1,5 +1,6 @@
 package com.my.basiccodelab2
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.my.basiccodelab2.ui.theme.BasicCodelab2Theme
@@ -29,8 +31,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
-//@Preview(showBackground = true)
 @Composable
 private fun MyApp() {
     var shouldShowOnboarding by rememberSaveable { mutableStateOf(true) }
@@ -42,7 +42,6 @@ private fun MyApp() {
     }
 }
 
-@Preview(showBackground = true)
 @Composable
 private fun LazyLists(names: List<String> = List(1000) { "$it" }) {
     LazyColumn(modifier = Modifier.padding(vertical = 4.dp)) {
@@ -74,7 +73,11 @@ fun Greeting(name: String) {
                     .padding(bottom = extraPadding.coerceAtLeast(0.dp))
             ) {
                 Text("Hello,")
-                Text(name)
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.h4.copy(fontWeight = FontWeight.ExtraBold),
+                    color = MaterialTheme.colors.error
+                )
             }
             OutlinedButton(onClick = { expanded.value = !expanded.value }) {
                 Text(text = if (expanded.value) "Show lese" else "Show more")
@@ -109,5 +112,28 @@ private fun OnBoardingScreen(onContinueclicked: () -> Unit) {
                 Text("Continue")
             }
         }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 320, heightDp = 320)
+@Composable
+fun OnboardingPreview() {
+    BasicCodelab2Theme {
+        OnBoardingScreen(onContinueclicked = {})
+    }
+}
+
+
+@Preview(
+    showBackground = true,
+    widthDp = 320,
+    uiMode = UI_MODE_NIGHT_YES,
+    name = "DefaultPreviewDark"
+)
+@Preview(showBackground = true, widthDp = 320)
+@Composable
+fun DefaultPreview() {
+    BasicCodelab2Theme {
+        LazyLists()
     }
 }
