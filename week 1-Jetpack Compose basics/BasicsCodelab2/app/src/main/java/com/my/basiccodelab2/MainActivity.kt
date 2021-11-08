@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,7 +26,7 @@ class MainActivity : ComponentActivity() {
 }
 
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
 private fun MyApp() {
     var shouldShowOnboarding by remember { mutableStateOf(true) }
@@ -32,7 +34,17 @@ private fun MyApp() {
     if (shouldShowOnboarding) {
         OnBoardingScreen(onContinueclicked = { shouldShowOnboarding = false })
     } else {
-        ColumnSample()
+        LazyLists()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun LazyLists(names: List<String> = List(1000) { "$it" }) {
+    LazyColumn(modifier = Modifier.padding(vertical = 4.dp)) {
+        items(items = names) { name ->
+            Greeting(name = name)
+        }
     }
 }
 
