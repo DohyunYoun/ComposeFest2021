@@ -25,60 +25,53 @@ class MainActivity : ComponentActivity() {
             ComposeWeek2Theme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    LayoutsCodelab()
+                    BodyContent()
                 }
             }
         }
     }
 }
 
+
 @Composable
-fun LayoutsCodelab() {
-}
+fun MyOwnColumn(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit  //content는 마지막에 위치하여 후행람다(?) 사용
+) {
+    Layout(
+        modifier = modifier,
+        content = content
+    ) { measurables, constraints ->
+        val placeables = measurables.map { measurable ->
+            measurable.measure(constraints)
+        }
 
-fun Modifier.firstBaselineToTop(
-    firstBaselineToTop: Dp
-) = this.then(
-    layout { measurable, constraints ->
-        val placeable = measurable.measure(constraints)
+        var yPosition = 0
 
-        check(placeable[FirstBaseline] != AlignmentLine.Unspecified)
-        val firstBaseline = placeable[FirstBaseline]
+        layout(constraints.maxWidth, constraints.maxHeight) {
+            placeables.forEach { placeable ->
+                placeable.placeRelative(x = 0, y = yPosition)
 
-        val placeableY = firstBaselineToTop.roundToPx() - firstBaseline
-        val height = placeable.height + placeableY
-        /**
-         * width : measured composable width
-         * height : measured composable height에 top-to-baseline - first-baseline
-         */
-        layout(placeable.width, height) {
-            placeable.placeRelative(0, placeableY)
+                yPosition += placeable.height
+            }
         }
     }
-)
-
-
-@Preview
-@Composable
-fun TextWithPaddingToBaselinePreview() {
-    ComposeWeek2Theme {
-        Text("Hi there!", Modifier.firstBaselineToTop(24.dp))
-    }
 }
 
-@Preview
 @Composable
-fun TextWithNormalPaddingPreview() {
-    ComposeWeek2Theme {
-        Text("Hi there!", Modifier.padding(top = 24.dp))
+fun BodyContent(modifier: Modifier = Modifier) {
+    MyOwnColumn(modifier.padding(8.dp)) {
+        Text("MyOwnColumn")
+        Text("places items")
+        Text("vertically.")
+        Text("We've done it by hand!")
     }
 }
-
 @Preview
 @Composable
 fun LayoutsCodelabPreview() {
     ComposeWeek2Theme {
-        LayoutsCodelab()
+        BodyContent()
     }
 }
 
