@@ -3,24 +3,20 @@ package com.my.composeweek2
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Button
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.AlignmentLine
+import androidx.compose.ui.layout.FirstBaseline
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
 import com.my.composeweek2.ui.theme.ComposeWeek2Theme
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,53 +34,43 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun LayoutsCodelab() {
-    val listSize = 100
-    val scrollState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
+}
 
-    Column {
-        Row {
-            Button(onClick = {
-                coroutineScope.launch {
-                    scrollState.animateScrollToItem(0)
-                }
-            }) {
-                Text("Scroll to the top")
-            }
+fun Modifier.firstBaselineToTop(
+    firstBaselineToTop: Dp
+) = this.then(
+    layout { measurable, constraints ->
+        val placeable = measurable.measure(constraints)
 
-            Button(onClick = {
-                coroutineScope.launch {
-                    scrollState.animateScrollToItem(listSize - 1)
-                }
-            }) {
-                Text("Scroll to the end")
-            }
+        check(placeable[FirstBaseline] != AlignmentLine.Unspecified)
+        val firstBaseline = placeable[FirstBaseline]
+
+        val placeableY = firstBaselineToTop.roundToPx() - firstBaseline
+        val height = placeable.height + placeableY
+        /**
+         * width : measured composable width
+         * height : measured composable height에 top-to-baseline - first-baseline
+         */
+        layout(placeable.width, height) {
+            placeable.placeRelative(0, placeableY)
         }
-        ImageList(scrollState)
+    }
+)
+
+
+@Preview
+@Composable
+fun TextWithPaddingToBaselinePreview() {
+    ComposeWeek2Theme {
+        Text("Hi there!", Modifier.firstBaselineToTop(24.dp))
     }
 }
 
+@Preview
 @Composable
-fun ImageList(scrollState: LazyListState) {
-    LazyColumn(state = scrollState) {
-        items(100) {
-            ImageListItem(it)
-        }
-    }
-}
-
-@Composable
-fun ImageListItem(index: Int) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Image(
-            painter = rememberImagePainter(
-                data = "https://developer.android.com/images/brand/Android_Robot.png"
-            ),
-            contentDescription = "Android Logo",
-            modifier = Modifier.size(50.dp)
-        )
-        Spacer(Modifier.width(10.dp))
-        Text("Item #$index", style = MaterialTheme.typography.subtitle1)
+fun TextWithNormalPaddingPreview() {
+    ComposeWeek2Theme {
+        Text("Hi there!", Modifier.padding(top = 24.dp))
     }
 }
 
