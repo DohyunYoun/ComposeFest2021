@@ -9,18 +9,17 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.*
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.*
 import com.my.composeweek2.ui.theme.ComposeWeek2Theme
 
 class MainActivity : ComponentActivity() {
@@ -30,7 +29,7 @@ class MainActivity : ComponentActivity() {
             ComposeWeek2Theme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    BodyContent()
+                    LayoutsCodelab()
                 }
             }
         }
@@ -38,11 +37,71 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
+fun LayoutsCodelab() {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(text = "LayoutsCodelab")
+                },
+                actions = {
+                    IconButton(onClick = { /* doSomething() */ }) {
+                        Icon(Icons.Filled.Favorite, contentDescription = null)
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
+        BodyContent(Modifier.padding(innerPadding))
+    }
+}
+
+@Composable
 fun BodyContent(modifier: Modifier = Modifier) {
-    Row(modifier = Modifier.horizontalScroll(rememberScrollState())){
-        StaggeredGrid(modifier = modifier, rows = 5) {
+    Row(modifier = modifier
+        .background(color = Color.LightGray)
+        .padding(16.dp)
+        .size(200.dp)
+        .horizontalScroll(rememberScrollState())){
+        StaggeredGrid(rows = 5) {
             for (topic in topics) {
                 Chip(modifier = Modifier.padding(8.dp), text = topic)
+            }
+        }
+    }
+}
+
+@Stable
+fun Modifier.padding(all: Dp) =
+    this.then(
+        PaddingModifier(start = all, top = all, end = all, bottom = all, rtlAware = true)
+    )
+
+private class PaddingModifier(
+    val start: Dp = 0.dp,
+    val top: Dp = 0.dp,
+    val end: Dp = 0.dp,
+    val bottom: Dp = 0.dp,
+    val rtlAware: Boolean,
+) : LayoutModifier {
+
+    override fun MeasureScope.measure(
+        measurable: Measurable,
+        constraints: Constraints
+    ): MeasureResult {
+
+        val horizontal = start.roundToPx() + end.roundToPx()
+        val vertical = top.roundToPx() + bottom.roundToPx()
+
+        val placeable = measurable.measure(constraints.offset(-horizontal, -vertical))
+
+        val width = constraints.constrainWidth(placeable.width + horizontal)
+        val height = constraints.constrainHeight(placeable.height + vertical)
+        return layout(width, height) {
+            if (rtlAware) {
+                placeable.placeRelative(start.roundToPx(), top.roundToPx())
+            } else {
+                placeable.place(start.roundToPx(), top.roundToPx())
             }
         }
     }
@@ -129,7 +188,7 @@ val topics = listOf(
 @Composable
 fun LayoutsCodelabPreview() {
     ComposeWeek2Theme {
-        BodyContent()
+        LayoutsCodelab()
     }
 }
 
