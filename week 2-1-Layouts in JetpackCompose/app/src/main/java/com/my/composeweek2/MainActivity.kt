@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -48,11 +50,22 @@ fun LayoutsCodelab() {
             )
         }
     ) { innerPadding ->
-        BodyContent(
+        SimpleList(
             Modifier
                 .padding(innerPadding)
                 .padding(8.dp)
         )
+    }
+}
+
+@Composable
+fun SimpleList(modifier: Modifier = Modifier) {
+    val scrollState = rememberScrollState()
+
+    Column(modifier = modifier.verticalScroll(scrollState)) {
+        repeat(100) {
+            Text("Item #$it")
+        }
     }
 }
 
