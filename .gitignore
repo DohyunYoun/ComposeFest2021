@@ -1,2 +1,9 @@
 .idea
 week 1-Jetpack Compose basics/BasicsCodelab2/gradle/wrapper
+gradle.properties
+gradlew
+gradlew.bat
+week 2-2-Using state in Jetpack Compose/.gradle/7.1.1/dependencies-accessors
+week 2-2-Using state in Jetpack Compose/.gradle/
+week 2-1-Layouts in JetpackCompose/gradle/
+local.properties
