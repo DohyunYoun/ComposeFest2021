@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -50,11 +52,22 @@ fun LayoutsCodelab() {
             )
         }
     ) { innerPadding ->
-        SimpleList(
+        LazyList(
             Modifier
                 .padding(innerPadding)
                 .padding(8.dp)
         )
+    }
+}
+
+@Composable
+fun LazyList(modifier: Modifier = Modifier) {
+    val scrollState = rememberLazyListState()
+
+    LazyColumn(modifier = modifier, state = scrollState) {
+        items(100) {
+            Text("Item #$it")
+        }
     }
 }
 
