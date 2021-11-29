@@ -21,6 +21,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import com.codelabs.state.ui.StateCodelabTheme
 
 class TodoActivity : AppCompatActivity() {
@@ -31,10 +34,23 @@ class TodoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             StateCodelabTheme {
-                Surface {
-                    // TODO: build the screen in compose
+                Surface { //앱에 배경을 추가하고 텍스트 색상을 설정한다.
+                    TodoActivityScreen(todoViewModel)
                 }
             }
         }
     }
+}
+
+/**
+ * 재사용성등을 위해 TodoScreen(Ui Component) 와  viewModel(State)을 연결해주는 다리역할
+ */
+@Composable
+private fun TodoActivityScreen(todoViewModel: TodoViewModel) {
+    val items: List<TodoItem> by todoViewModel.todoItems.observeAsState(initial = listOf())
+    TodoScreen(
+        items = items,
+        onAddItem = { todoViewModel.addItem(it) },
+        onRemoveItem = { todoViewModel.removeItem(it) })
+
 }
