@@ -79,8 +79,15 @@ fun TodoScreen(
  * @param onItemClicked (event) notify caller that the row was clicked
  * @param modifier modifier for this element
  */
+/**
+ * remember는 호출 한 컴포저블이 제거되면, 해당 값을 잊는다.
+ * 스크롤 하다 보면 이전 에 보았던 것과 다른 알파값이 확인된다. (todo완료 상태등을 저장하는건 위험하다)
+ */
 @Composable
-fun TodoRow(todo: TodoItem, onItemClicked: (TodoItem) -> Unit, modifier: Modifier = Modifier) {
+fun TodoRow(
+    todo: TodoItem, onItemClicked: (TodoItem) -> Unit, modifier: Modifier = Modifier,
+    iconAlpha: Float = remember(todo.id) { randomTint() }
+) {
     Row(
         modifier = modifier
             .clickable { onItemClicked(todo) }
@@ -88,7 +95,6 @@ fun TodoRow(todo: TodoItem, onItemClicked: (TodoItem) -> Unit, modifier: Modifie
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(todo.task)
-        val iconAlpha = remember(todo.id) { randomTint() }
         Icon(
             imageVector = todo.icon.imageVector,
             tint = LocalContentColor.current.copy(alpha = iconAlpha),
