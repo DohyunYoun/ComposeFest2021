@@ -48,4 +48,24 @@ class TopAppBarTest {
             )
             .assertExists()
     }
+
+    //참고 : https://www.charlezz.com/?p=45766
+    @Test
+    fun rallyTopAppBarTest_clickTabs(){
+        // 현재 상태
+        var currentScreen:RallyScreen = RallyScreen.Overview
+        composeTestRule.setContent {
+            //컴포즈 테스트 룰에 RallyApp 설정하기
+            RallyApp(currentScreen){ screen-> currentScreen = screen }
+        }
+
+        // 모든 탭을 순회하면서 클릭 하고 현재 상태를 확인한다.
+        RallyScreen.values().forEach { screen->
+            composeTestRule
+                .onNodeWithContentDescription(screen.name)
+                .performClick()
+            assert(currentScreen == screen)
+        }
+    }
+
 }
